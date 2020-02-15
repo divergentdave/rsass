@@ -1,5 +1,5 @@
 use super::value::value_expression;
-use super::{input_to_str, input_to_string};
+use super::{input_to_str, input_to_string, Span};
 use crate::sass::{SassString, StringPart};
 use crate::value::Quotes;
 use nom::branch::alt;
@@ -13,7 +13,7 @@ use nom::sequence::{delimited, pair, preceded, terminated, tuple};
 use nom::IResult;
 use std::str::from_utf8;
 
-pub fn sass_string(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn sass_string(input: Span) -> IResult<Span, SassString> {
     let (input, parts) = many1(alt((
         string_part_interpolation,
         map(selector_string, StringPart::Raw),
@@ -21,13 +21,13 @@ pub fn sass_string(input: &[u8]) -> IResult<&[u8], SassString> {
     Ok((input, SassString::new(parts, Quotes::None)))
 }
 
-pub fn sass_string_ext(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn sass_string_ext(input: Span) -> IResult<Span, SassString> {
     let (input, parts) =
         many1(alt((string_part_interpolation, extended_part)))(input)?;
     Ok((input, SassString::new(parts, Quotes::None)))
 }
 
-pub fn special_function_misc(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn special_function_misc(input: Span) -> IResult<Span, SassString> {
     let (input, start) = recognize(terminated(
         alt((
             map(
@@ -54,12 +54,12 @@ pub fn special_function_misc(input: &[u8]) -> IResult<&[u8], SassString> {
     let (input, mut args) = special_args(input)?;
     let (input, end) = tag(")")(input)?;
 
-    args.prepend(from_utf8(start).unwrap());
-    args.append_str(from_utf8(end).unwrap());
+    args.prepend(from_utf8(start.fragment()).unwrap());
+    args.append_str(from_utf8(end.fragment()).unwrap());
     Ok((input, args))
 }
 
-pub fn special_function_minmax(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn special_function_minmax(input: Span) -> IResult<Span, SassString> {
     let (input, start) = recognize(terminated(
         alt((tag_no_case("max"), tag_no_case("min"))),
         tag("("),
@@ -67,16 +67,16 @@ pub fn special_function_minmax(input: &[u8]) -> IResult<&[u8], SassString> {
     let (input, mut args) = special_args_minmax(input)?;
     let (input, end) = tag(")")(input)?;
 
-    args.prepend(&from_utf8(start).unwrap().to_lowercase());
-    args.append_str(from_utf8(end).unwrap());
+    args.prepend(&from_utf8(start.fragment()).unwrap().to_lowercase());
+    args.append_str(from_utf8(end.fragment()).unwrap());
     Ok((input, args))
 }
 
-fn special_args(input: &[u8]) -> IResult<&[u8], SassString> {
+fn special_args(input: Span) -> IResult<Span, SassString> {
     let (input, parts) = special_arg_parts(input)?;
     Ok((input, SassString::new(parts, Quotes::None)))
 }
-pub fn special_arg_parts(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
+pub fn special_arg_parts(input: Span) -> IResult<Span, Vec<StringPart>> {
     let (input, parts) = many0(alt((
         map(string_part_interpolation, |part| vec![part]),
         map(hash_no_interpolation, |s| vec![StringPart::from(s)]),
@@ -97,12 +97,12 @@ pub fn special_arg_parts(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
     Ok((input, parts.into_iter().flatten().collect()))
 }
 
-fn special_args_minmax(input: &[u8]) -> IResult<&[u8], SassString> {
+fn special_args_minmax(input: Span) -> IResult<Span, SassString> {
     let (input, parts) = special_arg_parts_minmax(input)?;
     Ok((input, SassString::new(parts, Quotes::None)))
 }
 
-fn special_arg_parts_minmax(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
+fn special_arg_parts_minmax(input: Span) -> IResult<Span, Vec<StringPart>> {
     let (input, parts) = many0(alt((
         map(special_function_misc, |s| s.into_parts()),
         map(special_function_minmax, |s| s.into_parts()),
@@ -150,7 +150,7 @@ fn special_arg_parts_minmax(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
     Ok((input, parts))
 }
 
-pub fn special_url(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn special_url(input: Span) -> IResult<Span, SassString> {
     let (input, _start) = tag("url(")(input)?;
     let (input, mut parts) = many1(alt((
         string_part_interpolation,
@@ -163,12 +163,12 @@ pub fn special_url(input: &[u8]) -> IResult<&[u8], SassString> {
     Ok((input, SassString::new(parts, Quotes::None)))
 }
 
-pub fn sass_string_dq(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn sass_string_dq(input: Span) -> IResult<Span, SassString> {
     let (input, parts) = dq_parts(input)?;
     Ok((input, SassString::new(parts, Quotes::Double)))
 }
 
-fn dq_parts(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
+fn dq_parts(input: Span) -> IResult<Span, Vec<StringPart>> {
     delimited(
         tag("\""),
         many0(alt((
@@ -183,7 +183,7 @@ fn dq_parts(input: &[u8]) -> IResult<&[u8], Vec<StringPart>> {
     )(input)
 }
 
-pub fn sass_string_sq(input: &[u8]) -> IResult<&[u8], SassString> {
+pub fn sass_string_sq(input: Span) -> IResult<Span, SassString> {
     let (input, parts) = delimited(
         tag("'"),
         many0(alt((
@@ -199,18 +199,18 @@ pub fn sass_string_sq(input: &[u8]) -> IResult<&[u8], SassString> {
     Ok((input, SassString::new(parts, Quotes::Single)))
 }
 
-fn string_part_interpolation(input: &[u8]) -> IResult<&[u8], StringPart> {
+fn string_part_interpolation(input: Span) -> IResult<Span, StringPart> {
     let (input, expr) =
         delimited(tag("#{"), value_expression, tag("}"))(input)?;
     Ok((input, StringPart::Interpolation(expr)))
 }
 
-fn simple_qstring_part(input: &[u8]) -> IResult<&[u8], StringPart> {
+fn simple_qstring_part(input: Span) -> IResult<Span, StringPart> {
     let (input, part) = map_res(is_not("\\#'\""), input_to_string)(input)?;
     Ok((input, StringPart::Raw(part)))
 }
 
-fn selector_string(input: &[u8]) -> IResult<&[u8], String> {
+fn selector_string(input: Span) -> IResult<Span, String> {
     fold_many1(
         // Note: This could probably be a whole lot more efficient,
         // but try to get stuff correct before caring too much about that.
@@ -231,21 +231,21 @@ fn selector_string(input: &[u8]) -> IResult<&[u8], String> {
     )(input)
 }
 
-fn selector_plain_part(input: &[u8]) -> IResult<&[u8], &str> {
+fn selector_plain_part(input: Span) -> IResult<Span, &str> {
     map_res(is_not("\r\n\t >$\"'\\#+*/()[]{}:;,=!&@"), input_to_str)(input)
 }
 
-fn hash_no_interpolation(input: &[u8]) -> IResult<&[u8], &str> {
+fn hash_no_interpolation(input: Span) -> IResult<Span, &str> {
     map_res(terminated(tag("#"), peek(not(tag("{")))), input_to_str)(input)
 }
 
-fn extra_escape(input: &[u8]) -> IResult<&[u8], StringPart> {
+fn extra_escape(input: Span) -> IResult<Span, StringPart> {
     let (input, s) = map_res(
         preceded(
             tag("\\"),
             alt((
                 alphanumeric1,
-                tag(b" "),
+                tag(" "),
                 tag("'"),
                 tag("\""),
                 tag("\\"),
@@ -257,7 +257,7 @@ fn extra_escape(input: &[u8]) -> IResult<&[u8], StringPart> {
     Ok((input, StringPart::Raw(format!("\\{}", s))))
 }
 
-pub fn extended_part(input: &[u8]) -> IResult<&[u8], StringPart> {
+pub fn extended_part(input: Span) -> IResult<Span, StringPart> {
     let (input, part) = map_res(
         recognize(pair(
             verify(take_char, is_ext_str_start_char),
@@ -292,7 +292,7 @@ fn is_ext_str_char(c: &char) -> bool {
         || *c == '|'
 }
 
-pub fn name(input: &[u8]) -> IResult<&[u8], String> {
+pub fn name(input: Span) -> IResult<Span, String> {
     map_opt(
         fold_many0(
             alt((escaped_char, name_char)),
@@ -306,11 +306,11 @@ pub fn name(input: &[u8]) -> IResult<&[u8], String> {
     )(input)
 }
 
-pub fn name_char(input: &[u8]) -> IResult<&[u8], char> {
+pub fn name_char(input: Span) -> IResult<Span, char> {
     verify(take_char, is_name_char)(input)
 }
 
-fn escaped_char(input: &[u8]) -> IResult<&[u8], char> {
+fn escaped_char(input: Span) -> IResult<Span, char> {
     preceded(
         tag("\\"),
         alt((
@@ -337,7 +337,7 @@ fn escaped_char(input: &[u8]) -> IResult<&[u8], char> {
     )(input)
 }
 
-fn take_char(input: &[u8]) -> IResult<&[u8], char> {
+fn take_char(input: Span) -> IResult<Span, char> {
     alt((
         map_opt(take(1usize), single_char),
         map_opt(take(2usize), single_char),
@@ -347,8 +347,10 @@ fn take_char(input: &[u8]) -> IResult<&[u8], char> {
     ))(input)
 }
 
-fn single_char(data: &[u8]) -> Option<char> {
-    from_utf8(&data).ok().and_then(|s| s.chars().next())
+fn single_char(data: Span) -> Option<char> {
+    from_utf8(data.fragment())
+        .ok()
+        .and_then(|s| s.chars().next())
 }
 
 fn is_name_char(c: &char) -> bool {
