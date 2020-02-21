@@ -36,7 +36,7 @@
 //! That said, this implementation has reached a version where I find it
 //! usable for my personal projects, and the number of working tests are
 //! improving.
-#![forbid(unsafe_code)]
+//#![forbid(unsafe_code)]
 use std::path::Path;
 
 pub mod css;
@@ -103,12 +103,7 @@ pub fn compile_value(input: &[u8], format: Format) -> Result<Vec<u8>, Error> {
 /// ```
 pub fn compile_scss(input: &[u8], format: Format) -> Result<Vec<u8>, Error> {
     let file_context = FileContext::new();
-    let items =
-        parse_scss_data(input).map_err(|(pos, kind)| Error::ParseError {
-            file: "-".into(),
-            pos: ErrPos::pos_of(pos, input),
-            kind,
-        })?;
+    let items = parse_scss_data(input)?;
     format.write_root(&items, &mut GlobalScope::new(format), &file_context)
 }
 
