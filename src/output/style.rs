@@ -84,7 +84,7 @@ impl Format {
                             {
                                 for item in parse_imported_scss_file(
                                     &file,
-                                    Some(Box::new(pos.clone())),
+                                    pos.clone(),
                                 )? {
                                     self.handle_root_item(
                                         &item,
@@ -430,7 +430,7 @@ impl Format {
                                     file_context.file(x.as_ref());
                                 let items = parse_imported_scss_file(
                                     &file,
-                                    Some(Box::new(pos.clone())),
+                                    pos.clone(),
                                 )?;
 
                                 self.handle_body(
