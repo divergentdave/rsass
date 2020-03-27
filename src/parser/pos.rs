@@ -5,7 +5,7 @@ use std::str::from_utf8;
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub struct SourcePos {
     pub line: String,
-    pub line_no: usize,
+    pub line_no: u32,
     pub line_pos: usize,
     pub file: SourceName,
 }
@@ -36,7 +36,7 @@ impl SourcePos {
 
         SourcePos {
             line: the_line.to_string(),
-            line_no: span.location_line() as usize,
+            line_no: span.location_line(),
             line_pos: span.get_utf8_column(),
             file: span.extra.clone(),
         }
