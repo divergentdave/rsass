@@ -19,7 +19,7 @@ fn t01_inline() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \'l\\\\ite\\ral\';\
+        \n  output: \"l\\\\iteral\";\
         \n  output: l\\iteral;\
         \n  output: \"[l\\\\iteral]\";\
         \n  output: \"l\\\\iteral\";\
@@ -165,10 +165,10 @@ fn t06_escape_interpolation() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \"[\\#{\'l\\\\ite\\ral\'}]\";\
-        \n  output: \"\\#{\'l\\\\ite\\ral\'}\";\
+        \n  output: \"[#{\'l\\\\iteral\'}]\";\
+        \n  output: \"#{\'l\\\\iteral\'}\";\
         \n  output: \"#{\" l\\\\iteral \"}\";\
-        \n  output: \"[\'\\#{\'l\\\\ite\\ral\'}\']\";\
+        \n  output: \"[\'#{\'l\\\\iteral\'}\']\";\
         \n}\
         \n"
     );

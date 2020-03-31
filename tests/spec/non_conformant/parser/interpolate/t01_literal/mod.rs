@@ -165,10 +165,10 @@ fn t06_escape_interpolation() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \"[\\#{literal}]\";\
-        \n  output: \"\\#{literal}\";\
-        \n  output: \'\\#{literal}\';\
-        \n  output: \"[\'\\#{literal}\']\";\
+        \n  output: \"[#{literal}]\";\
+        \n  output: \"#{literal}\";\
+        \n  output: \"#{literal}\";\
+        \n  output: \"[\'#{literal}\']\";\
         \n}\
         \n"
     );

@@ -193,8 +193,7 @@ impl<'a> Scope for ScopeImpl<'a> {
     }
 
     fn define(&mut self, name: &str, val: &Value) {
-        self.variables
-            .insert(name.replace('-', "_"), val.unrequote());
+        self.variables.insert(name.replace('-', "_"), val.clone());
     }
     fn define_default(&mut self, name: &str, val: &Value, global: bool) {
         match self.get_or_none(name) {
@@ -332,7 +331,7 @@ impl Scope for GlobalScope {
         self.variables
             .lock()
             .unwrap()
-            .insert(name.replace('-', "_"), val.unrequote());
+            .insert(name.replace('-', "_"), val.clone());
     }
     fn get_mixin(&self, name: &str) -> Option<(sass::FormalArgs, Vec<Item>)> {
         self.mixins.get(&name.replace('-', "_")).cloned()
@@ -641,7 +640,7 @@ pub mod test {
 
     #[test]
     fn color_arithemtic_by_name() {
-        assert_eq!("magenta", do_evaluate(&[], b"red + blue;"))
+        assert_eq!("fuchsia", do_evaluate(&[], b"red + blue;"))
     }
 
     #[test]

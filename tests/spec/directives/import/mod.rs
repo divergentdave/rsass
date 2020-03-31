@@ -150,7 +150,7 @@ mod configuration {
         }
     }
     #[test]
-    #[ignore] // unexepected error
+    #[ignore] // wrong result
     fn nested() {
         assert_eq!(
             rsass(
@@ -591,7 +591,7 @@ mod nested {
         #[allow(unused)]
         use super::rsass;
         #[test]
-        #[ignore] // unexepected error
+        #[ignore] // wrong result
         fn function() {
             assert_eq!(
         rsass(
@@ -614,7 +614,7 @@ mod nested {
     );
         }
         #[test]
-        #[ignore] // unexepected error
+        #[ignore] // wrong result
         fn mixin() {
             assert_eq!(
         rsass(
@@ -637,7 +637,7 @@ mod nested {
     );
         }
         #[test]
-        #[ignore] // unexepected error
+        #[ignore] // wrong result
         fn variable() {
             assert_eq!(
         rsass(

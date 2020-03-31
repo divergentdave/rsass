@@ -241,11 +241,11 @@ fn test_number_nines_b() {
 }
 #[test]
 fn test_number_nines_c() {
-    check_value(".999", ".999");
+    check_value(".999", "0.999");
 }
 #[test]
 fn test_number_nines_d() {
-    check_value("-.999", "-.999");
+    check_value("-.999", "-0.999");
 }
 #[test]
 fn test_number_nines_e() {

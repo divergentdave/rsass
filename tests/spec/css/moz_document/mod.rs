@@ -34,7 +34,7 @@ fn empty_prefix() {
         \n    b: c;\
         \n  }\
         \n}\
-        \n@-moz-document url-prefix(\'\') {\
+        \n@-moz-document url-prefix(\"\") {\
         \n  a {\
         \n    b: c;\
         \n  }\

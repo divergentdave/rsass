@@ -242,8 +242,8 @@ fn t22_colors_with_alpha() {
             goo: mix(rgba(255, 0, 0, 0.5), #00f);\n  \n  \
             boo: invert(#123456);\n}\n",
         "div{color:#ff0;background:#7b2d06;flah:#111;\
-           grah:rgba(255,0,238,.5);blah:rgba(1,2,3,.6);floo:cyan;\
-           bloo:rgba(0,255,255,.7);groo:cyan;hoo:123;moo:45;poo:6;\
+           grah:rgba(255,0,238,.5);blah:rgba(1,2,3,.6);floo:aqua;\
+           bloo:rgba(0,255,255,.7);groo:aqua;hoo:123;moo:45;poo:6;\
            goo:rgba(64,0,191,.75);boo:#edcba9}
 ",
     )

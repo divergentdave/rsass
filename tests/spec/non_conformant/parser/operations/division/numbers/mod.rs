@@ -55,9 +55,9 @@ fn pairs() {
         .unwrap(),
         "foo {\
         \n  test-1: 10/10;\
-        \n  test-2: 10 /10;\
-        \n  test-3: 10/ 10;\
-        \n  test-4: 10 / 10;\
+        \n  test-2: 10/10;\
+        \n  test-3: 10/10;\
+        \n  test-4: 10/10;\
         \n  test-5: 10/10;\
         \n  test-6: 10/10;\
         \n  test-7: 10/10;\

@@ -19,7 +19,7 @@ fn t01_inline() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \"alpha\", \'beta\';\
+        \n  output: \"alpha\", \"beta\";\
         \n  output: alpha, beta;\
         \n  output: \"[alpha, beta]\";\
         \n  output: \"alpha, beta\";\

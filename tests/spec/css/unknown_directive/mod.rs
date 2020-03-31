@@ -149,7 +149,7 @@ fn value_interpolation() {
         "@asdf 3;\
         \n@asdf foobarbaz;\
         \n@asdf \"foo bar baz\";\
-        \n@asdf \'foo bar baz\';\
+        \n@asdf \"foo bar baz\";\
         \n@asdf url(http://).com/);\
         \n@asdf url(\"http://).com/\");\
         \n"

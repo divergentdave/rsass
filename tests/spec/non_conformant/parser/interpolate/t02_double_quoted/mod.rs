@@ -167,7 +167,7 @@ fn t06_escape_interpolation() {
         ".result {\
         \n  output: \"[#{\" dquoted \"}]\";\
         \n  output: \"#{\" dquoted \"}\";\
-        \n  output: \'\\#{\"dquoted\"}\';\
+        \n  output: \'#{\"dquoted\"}\';\
         \n  output: \"[\'#{\" dquoted \"}\']\";\
         \n}\
         \n"

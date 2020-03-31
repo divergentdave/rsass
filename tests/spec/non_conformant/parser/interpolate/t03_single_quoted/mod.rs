@@ -19,7 +19,7 @@ fn t01_inline() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \'squoted\';\
+        \n  output: \"squoted\";\
         \n  output: squoted;\
         \n  output: \"[squoted]\";\
         \n  output: \"squoted\";\
@@ -165,10 +165,10 @@ fn t06_escape_interpolation() {
         )
         .unwrap(),
         ".result {\
-        \n  output: \"[\\#{\'squoted\'}]\";\
-        \n  output: \"\\#{\'squoted\'}\";\
+        \n  output: \"[#{\'squoted\'}]\";\
+        \n  output: \"#{\'squoted\'}\";\
         \n  output: \"#{\" squoted \"}\";\
-        \n  output: \"[\'\\#{\'squoted\'}\']\";\
+        \n  output: \"[\'#{\'squoted\'}\']\";\
         \n}\
         \n"
     );

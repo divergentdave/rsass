@@ -159,8 +159,8 @@ impl<'a> fmt::Display for Formatted<'a, Number> {
             out.write_char('-')?;
         }
 
-        let skip_zero = self.format.is_compressed() || !self.value.lead_zero;
-        if !(whole == 0 && skip_zero && !dec.is_empty()) {
+        let skip_zero = self.format.is_compressed();
+        if !(whole.is_zero() && skip_zero && !dec.is_empty()) {
             write!(out, "{}", whole)?;
         }
 
